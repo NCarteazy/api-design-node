@@ -2,6 +2,11 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var _ = require('lodash');
+var morgan = require('morgan');
+var fs = require('fs');
+
+var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'});
+app.use(morgan('dev', {stream: accessLogStream}));
 
 app.use(express.static('client'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -42,6 +47,21 @@ app.put('/lions/:id', function(req, res) {
   } else {
     var updatedLion = _.assign(lions[lion], update);
     res.json(updatedLion);
+  }
+});
+
+app.delete('/lions/:id', function(req, res) {
+  var goner = req.body;
+  if (goner.id) {
+    delete goner.id
+  }
+
+  var lion = _.findIndex(lions, {id: req.params.id});
+  if (!lions[lion]) {
+    res.send();
+  } else {
+    var updatedLions = _.remove(lions, {id: req.params.id}); 
+    res.json(updatedLions); 
   }
 });
 
