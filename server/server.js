@@ -2,11 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var _ = require('lodash');
-var morgan = require('morgan');
 var fs = require('fs');
-
-var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'});
-app.use(morgan('dev', {stream: accessLogStream}));
 
 app.use(express.static('client'));
 app.use(bodyParser.urlencoded({extended: true}));
